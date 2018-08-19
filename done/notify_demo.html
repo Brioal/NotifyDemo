@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>提示功能Demo</title>
+    <!--jquery-->
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <!--bootstrap-->
+    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <link href="../css/iziToast.min.css" rel="stylesheet">
+    <script src="../js/iziToast.min.js"></script>
+</head>
+<style>
+    h2 {
+        width: 100%;
+        height: 400px;
+        text-align: center;
+        top: 50%;
+        line-height: 400px;
+    }
+</style>
+<body>
+<h2 id="main_text_html">这是首页</h2>
+<!--全部完成的提示modal-->
+<div class="modal fade" id="modalDone" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDoneLabel">提示</h5>
+            </div>
+            <div class="modal-body">
+                客户回访已全部完成!
+            </div>
+        </div>
+    </div>
+</div>
+<!--显示回访数量-->
+<div class="modal fade" id="modalNormal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="-->Label">提示</h5>
+            </div>
+            <div class="modal-body">
+                进入需回访人数为 <a id="modal_normal_count" href="people_list_demo.html" style="color: red"></a> 人
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modal_normal_btn_go" class="btn btn-primary">前往回访</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    // 页面加载完毕之后判断提示
+    judgeNotify();
+
+    // 判断提示
+    function judgeNotify() {
+        $.ajax({
+            url: 'http://132.232.2.220:9001/backtips/',
+            type: 'GET',
+            datatype: "json",
+            contentType: "application/json",
+            success: function (data) {
+                if (data.success) {
+                    // 获取参数
+                    var charactor = data.role;
+                    // 获取数量
+                    var count = data.number;
+                    console.log(charactor);
+                    console.log(count);
+                    // if (charactor != 5) {
+                    //     return;
+                    // }
+                    if (count > 0) {
+                        // 显示提示
+                        showNormal(count);
+                        return;
+                    }
+                    // 显示全部完成了
+                    showDone();
+                } else {
+                    var toast = document.querySelector('.iziToast');
+                    iziToast.hide({}, toast);
+                    // 显示失败
+                    iziToast.error({
+                        title: '出错了',
+                        message: '回访失败,请稍后重试'
+                    });
+                    // 重新获取数据
+                    getData();
+                }
+            },
+            error: function (data) {
+                // 显示失败
+                iziToast.error({
+                    title: '出错了',
+                    message: '获取回访数据失败,请刷新重试'
+                });
+            }
+        });
+
+    }
+
+    // 显示全部完成了
+    function showDone() {
+        $('#modalDone').modal({backdrop: 'static', keyboard: false});
+    }
+
+    // 显示数量
+    function showNormal(count) {
+        $('#modalNormal').modal({backdrop: 'static', keyboard: false});
+        $("#modal_normal_count").html(count);
+    }
+
+    // 按钮跳转
+    $("#main_text_html").click(function () {
+        console.log("点击了跳转回访人员列表");
+        // 跳转回访列表
+        window.location.href = "people_list_demo.html";
+    });
+</script>
+</html>

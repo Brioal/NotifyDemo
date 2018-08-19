@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>客户状态查询</title>
+    <!--jquery-->
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <!--bootstrap-->
+    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <link href="css/iziToast.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <script src="js/iziToast.min.js"></script>
+    <script src="js/jqPaginator.js"></script>
+    <script src="js/toast.js"></script>
+    <script src="js/people_list/main.js"></script>
+</head>
+<body>
+<h2 style="margin-bottom: 20px">客户状态查询</h2>
+<nav class="navbar navbar-expand-lg navbar-light " style="margin: 0px;padding: 0px">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto"></ul>
+        <div class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="输入关键字" id="et_keyword">
+            <p class="btn btn-outline-danger my-2 my-sm-0" style="margin-right: 5px" id="btn_clear">清空</p>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="btn_search">搜索</button>
+        </div>
+    </div>
+</nav>
+<hr class="mb-4">
+<!--表格内容-->
+<table class="table table-striped">
+    <thead style="color: #ffffff;background-color: #0093ff;border: #32383e">
+    <tr>
+        <th>客户姓名</th>
+        <th>客户电话</th>
+        <th>到店情况</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+    </tbody>
+</table>
+<ul class="pagination" id="page"></ul>
+<script>
+    // 隐藏清空按钮
+    $("#btn_clear").hide();
+    // 搜索
+    $("#btn_search").click(function () {
+        // 检查关键字
+        var key = $("#et_keyword").val();
+        console.log(key);
+        if (key == null || key == "") {
+            iziToast.error({
+                title: '出错了',
+                position: 'topRight',
+                message: '请输入要搜索的关键字后重试'
+            });
+            return;
+        }
+        $("#btn_clear").show();
+        getPeopleList();
+    });
+    // 清空
+    $("#btn_clear").click(function () {
+        $("#et_keyword").val("");
+        $("#btn_clear").hide();
+        getPeopleList();
+    });
+
+    $("#et_keyword").on('input', function (e) {
+        var key = $("#et_keyword").val();
+        if (key == null || key == "") {
+            return;
+        }
+        $("#btn_clear").show();
+    });
+</script>
+</body>
+</html>
