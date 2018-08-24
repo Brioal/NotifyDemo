@@ -49,6 +49,7 @@ function getHostoryList() {
 
 // 显示历史数据
 function showHistoryData(data) {
+
     // 清空内容
     $(".tr_add").remove();
     // 循环添加
