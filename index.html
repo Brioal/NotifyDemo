@@ -123,12 +123,61 @@
         margin-right: 5px;
     }
 
+    .second_menu {
+        width: 240px;
+        background-color: #ECF2F6;
+        height: 100%;
+        left: 240px;
+        position: fixed;
+        z-index: 99;
+    }
+
+    .second_menu .title {
+        font-size: 17px;
+        margin-left: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .second_menu .menu {
+        font-size: 14px;
+        padding-left: 20px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .second_menu .menu a{
+        font-size: 14px;
+        padding-left: 20px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        text-decoration: none;
+        color: #354052;
+    }
+
+    .second_menu .menu:hover {
+        background-color: #639af5;
+        color: white;
+    }
+
+    a {
+        color: #f0f0f0;
+        text-decoration: none;
+    }
+
 </style>
 <body class="cbp-spmenu-push">
+<div class="second_menu">
+    <h4 class="title" id="second_title">菜单分类</h4>
+    <div class="split"></div>
+    <div id="second_menu">
+
+    </div>
+</div>
 <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left nav_title" id="cbp-spmenu-s1">
     <!--表头-->
     <div class="head_title">
-        <i class="icon iconfont icon-liebiao icon_menu"></i>
+        <i class="icon iconfont icon-liebiao icon_menu link_toglle"></i>
         <p class="name">痘你完</p>
     </div>
     <!--首页-->
@@ -141,18 +190,21 @@
     </div>
     <div class="split"></div>
     <p class="label">菜单</p>
-    <p class="menu_item">菜单一<i class="icon iconfont icon-liebiao icon_right"></i></p>
-    <p class="menu_item">菜单一<i class="icon iconfont icon-liebiao icon_right"></i></p>
-    <p class="menu_item">菜单一<i class="icon iconfont icon-liebiao icon_right"></i></p>
+    <div id="menu_container">
+    </div>
+
 </nav>
+
 <div class="mainContainer">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#" ><i id="btn_toggle" class="icon iconfont icon-menu" style="margin-right: 10px"></i>首页</a>
+        <a class="navbar-brand link_toglle" href="#"><i id="btn_toggle" class="icon iconfont icon-menu"
+                                                             style="margin-right: 10px"></i>菜单</a>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
             </ul>
             <div class="dropdown show">
-                <a class="btn btn-outline-success dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="btn btn-outline-success dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     管理员1
                 </a>
 
@@ -168,29 +220,174 @@
 
     </div>
 </div>
-
-
 <script src="js/classie.js"></script>
+
 <script>
+    // 当前的一级菜单index
+    var firstIndex = 0;
+    // 显示二级菜单
+    var isSecond = false;
+
+    // 显示二级菜单
+    function showSecondMenu(data) {
+        // 清空数据
+        $(".menu").remove();
+        // 获取要显示的数据
+        var firstName = data.name;
+        var menus = data.second;
+
+        $("#second_title").text(firstName);
+        var length = menus.length;
+        for (var i = 0; i < length; i++) {
+            var bean = menus[i];
+            var line = "<p class=\"menu\"><a href=\"" + bean.url + "\">" + bean.name + "</a></p>";
+            $("#second_menu").append(line);
+        }
+        $(".second_menu").show();
+    }
+
+    // 显示一级菜单项
+    function showMenu(data) {
+        // 清空
+        $(".menu_item").remove();
+        // 循环添加菜单
+        var length = data.length;
+        for (var i = 0; i < length; i++) {
+            var bean = data[i];
+            var line = "<p class=\"menu_item\" attr_index='" + i + "'>" + bean.name + "<i class=\"icon iconfont  icon_right " + bean.icon + "\"></i></p>";
+            $("#menu_container").append(line);
+        }
+        // 添加滑动事件
+        $(".menu_item").mouseover(function () {
+            firstIndex = $(this).attr("attr_index");
+            showSecondMenu(data[firstIndex]);
+        });
+
+
+    }
+
+    // 切换菜单
     var menuLeft = document.getElementById('cbp-spmenu-s1'),
         body = document.body;
     var isExpend = true;
-    var allwidth=$(".mainContainer").width();
-    var menuwidth=$(".cbp-spmenu").width();
-    $("#btn_toggle").click(function () {
+    var allwidth = $(".mainContainer").width();
+    var menuwidth = $(".cbp-spmenu").width();
+
+    function toggleMenu() {
         classie.toggle(this, 'active');
         classie.toggle(body, 'cbp-spmenu-push-toright');
         classie.toggle(menuLeft, 'cbp-spmenu-open');
         // 获取body原本宽度
-        var result = 0;
-        if (isExpend) {
-            result = allwidth - menuwidth;
-        } else {
-            result = allwidth;
-        }
-        isExpend = !isExpend;
-        $(".mainContainer").css({"width":result+"px"});
+        // var result = 0;
+        // if (isExpend) {
+        //     result = allwidth - menuwidth;
+        // } else {
+        //     result = allwidth;
+        // }
+        // isExpend = !isExpend;
+        // $(".mainContainer").css({"width": result + "px"});
+    }
+
+
+</script>
+<script>
+    // 显示二级菜单
+    $(".second_menu").mouseover(function () {
+        isSecond = true;
+        $(".second_menu").show();
     });
+    $(".menu_item").mouseout(function () {
+        if (isSecond) {
+            return;
+        }
+        $(".second_menu").hide();
+    });
+    $(".second_menu").mouseout(function () {
+        isSecond = false;
+        $(".second_menu").hide();
+    });
+</script>
+<script>
+    // 显示一级菜单
+    var testMenuData = [
+        {
+            name: "第一个菜单",
+            icon: "icon-liebiao",
+            second: [
+                {
+                    name: "第1个子菜单",
+                    url: "xxxx"
+                },
+                {
+                    name: "第2个子菜单",
+                    url: "xxxx"
+                },
+                {
+                    name: "第3个子菜单",
+                    url: "xxxx"
+                }
+            ]
+        },
+        {
+            name: "第二个菜单",
+            icon: "icon-liebiao",
+            second: [
+                {
+                    name: "第4个子菜单",
+                    url: "xxxx"
+                },
+                {
+                    name: "第5个子菜单",
+                    url: "xxxx"
+                },
+                {
+                    name: "第6个子菜单",
+                    url: "xxxx"
+                }
+            ]
+        },
+        {
+            name: "第三个菜单",
+            icon: "icon-liebiao",
+            second: [
+                {
+                    name: "第7个子菜单",
+                    url: "xxxx"
+                },
+                {
+                    name: "第8个子菜单",
+                    url: "xxxx"
+                },
+                {
+                    name: "第9个子菜单",
+                    url: "xxxx"
+                }
+            ]
+        },
+        {
+            name: "第四个菜单",
+            icon: "icon-liebiao",
+            second: [
+                {
+                    name: "第10个子菜单",
+                    url: "xxxx"
+                },
+                {
+                    name: "第11个子菜单",
+                    url: "xxxx"
+                },
+                {
+                    name: "第12个子菜单",
+                    url: "xxxx"
+                }
+            ]
+        }
+    ];
+    showMenu(testMenuData);
+    // 点击事件
+    $(".link_toglle").click(toggleMenu);
+    // 默认隐藏二级菜单
+    $(".second_menu").hide();
 </script>
 </body>
 </html>
